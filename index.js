@@ -7,7 +7,7 @@ const app = express()
 app.use(express.json())
 app.use(cors());
 
-const port=5000;
+const port=process.env.PORT;
 // respond with "hello world" when a GET request is made to the homepage
 
 // app.get('/', (req, res) => {
