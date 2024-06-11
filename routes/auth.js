@@ -19,7 +19,7 @@ router.post('/createuser', [
     try{
     let user=await User.findOne({email:req.body.email})
     if(user){
-        return res.status(400).json({success, error:"This email already exists!"})
+         res.status(400).json({success, error:"This email already exists!"})
     }
     const salt= await bcrypt.genSalt(10);
     const secPass=await bcrypt.hash(req.body.password,salt);
@@ -49,18 +49,18 @@ router.post('/login', [
     const errors = validationResult(req);
     let success=false;
     if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
+        res.status(400).json({ errors: errors.array() });
     }
     const {name,email,password}=req.body;
     try{
         let user=await User.findOne({email});
         if(!user){
-return res.status(400).send("Please try to login with correct credentials");
+        res.status(400).send("Please try to login with correct credentials");
         }
     const passwordCompare= await bcrypt.compare(password,user.password);
     if(!passwordCompare){
         success=false;
-return res.status(400).send("Please try to login with correct credentials");
+        res.status(400).send("Please try to login with correct credentials");
     }
     const data={
         user:{
@@ -69,7 +69,7 @@ return res.status(400).send("Please try to login with correct credentials");
     }
     const authtoken= jwt.sign(data,process.env.JWT_SECRET);
     success=true;
-res.json({name,success,authtoken});
+    res.json({name,success,authtoken});
 }catch(error){
     console.log(error.message);
     res.status(500).send("Internal server error");
