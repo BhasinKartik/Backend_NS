@@ -19,7 +19,7 @@ router.post('/createuser', [
     try{
     let user=await User.findOne({email:req.body.email})
     if(user){
-         res.status(400).json({name,success, error:"This email already exists!"})
+         return res.status(400).json({name,success, error:"This email already exists!"})
     }
     const salt= await bcrypt.genSalt(10);
     const secPass=await bcrypt.hash(req.body.password,salt);
@@ -39,7 +39,7 @@ router.post('/createuser', [
 res.json({name,success,authtoken});
 }catch(err){
     console.log(err.message)
-res.status(500).send("some error occured");
+return res.status(500).send("some error occured");
 }
 })
 router.post('/login', [
@@ -49,18 +49,18 @@ router.post('/login', [
     const errors = validationResult(req);
     let success=false;
     if (!errors.isEmpty()) {
-        res.status(400).json({ errors: errors.array() });
+        return res.status(400).json({ errors: errors.array() });
     }
     const {name,email,password}=req.body;
     try{
         let user=await User.findOne({email});
         if(!user){
-        res.status(400).json({name,success,error:"Please try to login with correct credentials"});
+        return res.status(400).json({name,success,error:"Please try to login with correct credentials"});
         }
     const passwordCompare= await bcrypt.compare(password,user.password);
     if(!passwordCompare){
         success=false;
-        res.status(400).json({name,success,error:"Please try to login with correct credentials"});
+        return res.status(400).json({name,success,error:"Please try to login with correct credentials"});
     }
     const data={
         user:{
@@ -69,20 +69,20 @@ router.post('/login', [
     }
     const authtoken= jwt.sign(data,process.env.JWT_SECRET);
     success=true;
-    res.json({name,success,authtoken});
+   return res.json({name,success,authtoken});
 }catch(error){
     console.log(error.message);
-    res.status(500).send("Internal server error");
+    return res.status(500).send("Internal server error");
 }
 })
 router.post('/getuser',fetchuser, async(req,res)=>{
     try{
      const userId=req.user.id;
         const user=await User.findById(userId).select("-password");
-        res.send(user)
+        return res.send(user)
     }catch(error){
         console.log(error.message);
-    res.status(500).send("Internal server error");
+    return res.status(500).send("Internal server error");
     }
 })
 module.exports=router
