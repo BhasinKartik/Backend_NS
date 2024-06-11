@@ -15,6 +15,7 @@ router.post('/createuser', [
     if (!errors.isEmpty()) {
         return res.status(400).json({ success, errors: errors.array() });
     }
+    const {name,email,password}=req.body;
     try{
     let user=await User.findOne({email:req.body.email})
     if(user){
@@ -35,7 +36,7 @@ router.post('/createuser', [
     }
     const authtoken=jwt.sign(data,process.env.JWT_SECRET);
     success=true;
-res.json({success,authtoken});
+res.json({name,success,authtoken});
 }catch(err){
     console.log(err.message)
 res.status(500).send("some error occured");
@@ -50,7 +51,7 @@ router.post('/login', [
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
     }
-    const {email,password}=req.body;
+    const {name,email,password}=req.body;
     try{
         let user=await User.findOne({email});
         if(!user){
@@ -68,7 +69,7 @@ return res.status(400).send("Please try to login with correct credentials");
     }
     const authtoken= jwt.sign(data,process.env.JWT_SECRET);
     success=true;
-res.json({success,authtoken});
+res.json({name,success,authtoken});
 }catch(error){
     console.log(error.message);
     res.status(500).send("Internal server error");
