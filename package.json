@@ -1,7 +1,7 @@
 {
   "name": "inotebook-backend",
   "version": "1.0.0",
-  "description": "your notes on the web",
+  "description": "your notebook on the web",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
